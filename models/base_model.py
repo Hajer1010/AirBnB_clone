@@ -13,7 +13,7 @@ class BaseModel:
     """
     def __init__(self, *args, **kwargs):
 
-        tform = "%Y-%m-%dT%H:%M:%S.%f"     
+        tform = "%Y-%m-%dT%H:%M:%S.%f"
         self.id = str(uuid4())
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
@@ -24,7 +24,7 @@ class BaseModel:
                 else:
                     self.__dict__[k] = v
         else:
-        models.storage.new(self)
+            models.storage.new(self)
 
     def __str__(self):
         """
@@ -39,8 +39,7 @@ class BaseModel:
 
     def to_dict(self):
         rdict = dict(self.__dict__)
-        rdict.update({'__class__': type(self).__name__,
-                        'updated_at': self.updated_at.isoformat(),
-                        'id': self.id,
-                        'created_at': self.created_at.isoformat()})
+        rdict["created_at"] = self.created_at.isformat()
+        rdict["updated_at"] = self.updated_at.isformat()
+        rdict["__class__"] = self.__class__.__name__
         return rdict

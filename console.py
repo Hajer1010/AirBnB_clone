@@ -12,6 +12,7 @@ from models.amenity import Amenity
 from models.review import Review
 import re
 
+
 def parse(arg):
     curly_braces = re.search(r"\{(.*?)\}", arg)
     brackets = re.search(r"\[(.*?)\]", arg)
@@ -94,7 +95,7 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         else:
             print(objdict["{}.{}".format(argl[0], argl[1])])
-    
+
     def do_create(self, arg):
         """ Create a new classinstanceand print its id.
         """
@@ -106,6 +107,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             print(eval(argl[0])().id)
             storage.save()
+
     def do_destroy(self, arg):
         """Delete a class instance of a given id."""
         argl = parse(arg)
