@@ -2,7 +2,8 @@
 """
 Defines the base model
 """
-import uuid
+import models
+from uuid import uuid4
 from datetime import datetime
 
 
@@ -11,34 +12,35 @@ class BaseModel:
     Defines all common attributes and methods for other classes
     """
     def __init__(self, *args, **kwargs):
-        if kwargs is not None and len(kwargs) != 0:
-            if '__class__' in kwargs:
-                del kwargs['__class__']
-            kwargs['created_at'] = datetime.fromisoformat(kwargs['created_at'])
-            kwargs['updated_at'] = datetime.fromisoformat(kwargs['updated_at'])
-            self.__dict__.update(kwargs)
+
+        tform = "%Y-%m-%dT%H:%M:%S.%f"     
+        self.id = str(uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
+        if len(kwargs) != 0:
+            for k, v in kwargs.items():
+                if k == "created_at" or k == "updated_at":
+                    self.__dict__[k] = datetime.strptime(v, tform)
+                else:
+                    self.__dict__[k] = v
         else:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-            from .__init__ import storage
-            storage.new(self)
+        models.storage.new(self)
 
     def __str__(self):
         """
         String representation when instance is printed
         """
-        return f"[{type(self).__name__}] ({self.id}) {self.__dict__}"
+        clname = self.__class__.__name__
+        return "[{}] ({}) {}".format(clname, self.id, self.__dict__)
 
     def save(self):
         self.__dict__.update({'updated_at': datetime.now()})
-        from .__init__ import storage
-        storage.save(self)
+        models.storage.save(self)
 
     def to_dict(self):
-        disdict = dict(self.__dict__)
-        disdict.update({'__class__': type(self).__name__,
+        rdict = dict(self.__dict__)
+        rdict.update({'__class__': type(self).__name__,
                         'updated_at': self.updated_at.isoformat(),
                         'id': self.id,
                         'created_at': self.created_at.isoformat()})
-        return disdict
+        return rdict
