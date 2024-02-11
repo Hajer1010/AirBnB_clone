@@ -15,8 +15,8 @@ class BaseModel:
 
         tform = "%Y-%m-%dT%H:%M:%S.%f"
         self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        self.created_at = datetime.today()
+        self.updated_at = datetime.today()
         if len(kwargs) != 0:
             for k, v in kwargs.items():
                 if k == "created_at" or k == "updated_at":
@@ -34,11 +34,11 @@ class BaseModel:
         return "[{}] ({}) {}".format(clname, self.id, self.__dict__)
 
     def save(self):
-        self.__dict__.update({'updated_at': datetime.now()})
+        self.updated_at: datetime.today()
         models.storage.save(self)
 
     def to_dict(self):
-        rdict = dict(self.__dict__)
+        rdict = self.__dict__.copy()
         rdict["created_at"] = self.created_at.isformat()
         rdict["updated_at"] = self.updated_at.isformat()
         rdict["__class__"] = self.__class__.__name__
